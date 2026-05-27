@@ -1,107 +1,107 @@
 # MG4 HVAC Overlay Launcher
 
-Dieses Mini-Projekt startet die MG4-Klima-Overlay-Ansicht mit dem oberen Schliessen-Button.
+This mini-project launches the MG4 climate overlay view with the top close button.
 
-## Was die App macht
+## What the app does
 
-Die App ist nur ein schlanker Launcher:
+The app is just a lightweight launcher:
 
-- sie bindet an `com.android.systemui.StartActivityService`
-- sie verwendet die Binder-Schnittstelle `com.saicmotor.sdk.external.IPageService`
-- sie ruft `openHvac()` auf
+- it binds to `com.android.systemui.StartActivityService`
+- it uses the Binder interface `com.saicmotor.sdk.external.IPageService`
+- it calls `openHvac()`
 
-Dadurch wird nicht die normale HVAC-App als Vollansicht gestartet, sondern der `SystemUI`-eigene HVAC-Overlay-Pfad.
+This means it does not launch the normal full-screen HVAC app, but instead triggers the `SystemUI`-owned HVAC overlay path.
 
-## Normaler OEM-Flow
+## Normal OEM flow
 
-Der normale Weg zur Overlay-Ansicht laeuft im MG4 nicht direkt ueber die HVAC-App selbst, sondern ueber `SystemUI`.
+On the MG4, the normal path to this overlay does not come directly from the HVAC app itself, but from `SystemUI`.
 
-### Beteiligte Teile
+## Components involved
 
-- Vollansicht HVAC-App:
-  - Paket: `com.saicmotor.hmi.hvac`
-  - Activity: `com.saicmotor.hmi.hvac.HvacActivity`
+- Full HVAC app:
+  - package: `com.saicmotor.hmi.hvac`
+  - activity: `com.saicmotor.hmi.hvac.HvacActivity`
 
-- Overlay-Steuerung:
-  - Paket: `com.android.systemui`
-  - Service: `com.android.systemui.StartActivityService`
-  - Binder-Implementierung: `com.android.systemui.PageManagerBinder`
+- Overlay controller:
+  - package: `com.android.systemui`
+  - service: `com.android.systemui.StartActivityService`
+  - Binder implementation: `com.android.systemui.PageManagerBinder`
 
-- Overlay-View mit Close-Button:
+- Overlay view with close button:
   - `com.android.systemui.saicmotor.view.HVACPageView`
-  - Layout: `layout_hvac_page.xml`
-  - oberer Close-/Pickup-Button: `iv_pick_up`
+  - layout: `layout_hvac_page.xml`
+  - top close / pickup button: `iv_pick_up`
 
-## Wie das Overlay normalerweise entsteht
+## How the overlay is normally shown
 
-Der typische Ablauf ist:
+The typical flow is:
 
-1. Ein OEM-Teil in `SystemUI` oder ueber den `PageManager` fordert `openHvac()` an.
-2. `PageManagerBinder.openHvac()` setzt den HVAC-Starttyp auf `0` (`HVAC_START_BY_HAND`).
-3. `SystemUI` blendet Statusbar und Dock in den HVAC-Modus um.
-4. `SystemUI` zeigt die Overlay-Ansicht `HVACPageView`.
-5. In dieser View steckt oben der zusaetzliche Schliessen-Button.
+1. An OEM component in `SystemUI`, or code using `PageManager`, requests `openHvac()`.
+2. `PageManagerBinder.openHvac()` sets the HVAC start type to `0` (`HVAC_START_BY_HAND`).
+3. `SystemUI` switches the status bar and dock into HVAC mode.
+4. `SystemUI` shows the `HVACPageView` overlay.
+5. That view contains the extra top close button.
 
-Das bedeutet:
+This means:
 
-- die normale HVAC-App ist nicht selbst fuer diesen Close-Button zustaendig
-- der Close-Button gehoert zur `SystemUI`-Overlay-Ansicht
+- the normal HVAC app is not responsible for that close button
+- the close button belongs to the `SystemUI` overlay view
 
-## Unterschied zur normalen HVAC-App
+## Difference from the normal HVAC app
 
-Es gibt zwei verschiedene HVAC-Darstellungen:
+There are two different HVAC presentations:
 
 - `HvacActivity`
-  - volle Klima-App
-  - keine `SystemUI`-Overlay-Leiste mit dem oberen Close-Button
+  - full climate app
+  - no `SystemUI` overlay bar with the top close button
 
 - `HVACPageView`
-  - `SystemUI`-Overlay
-  - mit oberem Close-Button
-  - genau diese Ansicht startet dieses Projekt
+  - `SystemUI` overlay
+  - includes the top close button
+  - this is the exact view launched by this project
 
-Zusatzlich existiert noch ein kleines Klima-Info-Dialogfenster in `SystemUI`:
+There is also a smaller HVAC info dialog in `SystemUI`:
 
 - `HvacControlDialog`
 
-Das ist aber nicht die grosse Overlay-Ansicht mit dem oberen Schliessen-Button.
+However, that is not the large overlay view with the top close button.
 
-## Was dieses Projekt konkret nachbaut
+## What this project recreates
 
-Dieses Projekt baut nur den Einstiegspunkt nach:
+This project only recreates the entry point:
 
-- App-Icon antippen
-- an `StartActivityService` binden
-- `openHvac()` aufrufen
-- `SystemUI` zeigt das HVAC-Overlay
+- tap the app icon
+- bind to `StartActivityService`
+- call `openHvac()`
+- `SystemUI` shows the HVAC overlay
 
-## Signierung
+## Signing
 
-Damit die APK auf dem MG4 sinnvoll in das vorhandene OEM-Umfeld passt, sollte sie mit denselben Plattform-Keys signiert werden, die du auch schon im anderen Projekt verwendest.
+To integrate cleanly into the MG4 OEM environment, the APK should be signed with the same platform keys already used in the other project.
 
-Vorhandene Key-Dateien:
+Existing key files:
 
-- `/Users/jan/Projekts/MG4-360-Camera-App/tools/platform.pk8`
-- `/Users/jan/Projekts/MG4-360-Camera-App/tools/platform.x509.pem`
+- `platform.pk8`
+- `platform.x509.pem`
 
-Das Projekt hier kopiert diese Keys nicht. Stattdessen verweist das Signier-Script direkt auf diesen bestehenden Ordner.
+This project does not copy those keys. Instead, the signing script directly references an existing directory.
 
-Wenn du spaeter bauen willst, ist der geplante Ablauf:
+If you want to build later, the intended flow is:
 
-1. Release-APK erzeugen
-2. `apksigner` mit `platform.pk8` und `platform.x509.pem` ausfuehren
-3. die signierte APK ins Auto installieren
+1. build the release APK
+2. run `apksigner` using `platform.pk8` and `platform.x509.pem`
+3. install the signed APK in the car
 
-Das mitgelieferte Script dafuer ist:
+The included script for this is:
 
-- [tools/build_sign_release.sh](/Users/jan/Documents/Codex/2026-05-26/komplett-neues-mini-side-prokect-hier/tools/build_sign_release.sh)
+- `tools/build_sign_release.sh`
 
-## Wichtiger Hinweis
+## Important note
 
-Das funktioniert nur, wenn das Zielsystem:
+This only works if the target system:
 
-- `com.android.systemui.StartActivityService` exportiert
-- die Binder-Schnittstelle unveraendert anbietet
-- den Bind aus einer Drittanbieter-App nicht per Berechtigung blockiert
+- exports `com.android.systemui.StartActivityService`
+- still provides the same Binder interface
+- does not block third-party apps from binding to that service
 
-Falls der Bind auf einem anderen Softwarestand scheitert, ist das wahrscheinlich kein Fehler in dieser App, sondern eine OEM-/Firmware-Abweichung.
+If the bind fails on a different software version, that is most likely an OEM / firmware difference rather than a bug in this app.
