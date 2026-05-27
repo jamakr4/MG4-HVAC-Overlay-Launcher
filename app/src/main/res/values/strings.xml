@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MG4 HVAC Overlay</string>
+    <string name="opening_overlay">Oeffne HVAC-Overlay...</string>
+    <string name="overlay_opened">HVAC-Overlay gestartet</string>
+</resources>

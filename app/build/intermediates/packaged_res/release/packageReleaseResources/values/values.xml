@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <color name="brand_bg">#0E2230</color>
+    <color name="brand_fg">#D4F2FF</color>
+    <color name="window_bg">#F3F7F9</color>
+    <string name="app_name">MG4 HVAC Overlay</string>
+    <string name="opening_overlay">Oeffne HVAC-Overlay...</string>
+    <string name="overlay_opened">HVAC-Overlay gestartet</string>
+    <style name="Theme.MG4HvacOverlay" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="colorPrimary">@color/brand_bg</item>
+        <item name="colorPrimaryDark">@color/brand_bg</item>
+        <item name="colorAccent">@color/brand_fg</item>
+        <item name="android:textColorPrimary">@color/brand_bg</item>
+        <item name="android:textColor">@color/brand_bg</item>
+        <item name="android:windowLightStatusBar" ns1:targetApi="23">false</item>
+    </style>
+</resources>

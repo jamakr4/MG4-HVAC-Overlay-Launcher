@@ -1,0 +1,11 @@
+R_DEF: Internal format may change without notice
+local
+color brand_bg
+color brand_fg
+color window_bg
+drawable ic_launcher_foreground
+mipmap ic_launcher
+string app_name
+string opening_overlay
+string overlay_opened
+style Theme.MG4HvacOverlay
